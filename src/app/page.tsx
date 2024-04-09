@@ -1,113 +1,195 @@
+"use client";
+
+import clsx from "clsx";
 import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
+  const [currentImg, setCurrentImg] = useState(0);
+  const [carouselSize, setCarouselSize] = useState({ width: 0, height: 0 });
+  const carouselRef = useRef(null);
+
+  useEffect(() => {
+    let elem = carouselRef.current as unknown as HTMLDivElement;
+    let { width, height } = elem.getBoundingClientRect();
+    if (carouselRef.current) {
+      setCarouselSize({
+        width,
+        height,
+      });
+    }
+  }, []);
+
+  const [mainCarouselSize, setMainCarouselSize] = useState({
+    width: 0,
+    height: 0,
+  });
+  const mainCarouselRef = useRef(null);
+
+  useEffect(() => {
+    let elem = mainCarouselRef.current as unknown as HTMLDivElement;
+    let { width, height } = elem.getBoundingClientRect();
+    if (mainCarouselRef.current) {
+      setMainCarouselSize({
+        width,
+        height,
+      });
+    }
+  }, []);
+
+  const links = [
+    {
+      href: "/pokemon",
+      name: "Pokemon",
+      image:
+        "https://ichef.bbci.co.uk/news/976/cpsprodpb/147C0/production/_132740938_indeximage.jpg.webp",
+    },
+    {
+      href: "/pokemon",
+      name: "Pokemon",
+      image:
+        "https://ichef.bbci.co.uk/news/976/cpsprodpb/147C0/production/_132740938_indeximage.jpg.webp",
+    },
+  ];
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="overflow-hidden w-screen h-screen relative flex justify-center items-center">
+      <div
+        ref={carouselRef}
+        style={{
+          left: -currentImg * carouselSize.width,
+        }}
+        className="w-full h-full flex transition-all duration-300 absolute flex-none"
+      >
+        {links.map((link, index) => {
+          return (
+            <div key={index} className="relative shrink-0 w-full h-full">
+              <Image
+                className="pointer-events-none blur-xl opacity-90"
+                alt={`carousel-image-${index}`}
+                fill
+                src={link.image}
+              />
+            </div>
+          );
+        })}
+      </div>
+
+      <button
+        type="button"
+        className={clsx(
+          "z-30 flex items-center justify-center h-full px-4 group",
+          {
+            "opacity-50": currentImg === 0,
+          },
+          {
+            "cursor-pointer": currentImg > 0 && links.length > 1,
+          }
+        )}
+        data-carousel-prev
+        onClick={() => {
+          setCurrentImg((prev) => prev - 1);
+        }}
+        disabled={currentImg === 0}
+      >
+        <span
+          className={clsx(
+            "inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30",
+            {
+              "group-hover:bg-gray-600/50 group-focus:outline-none":
+                currentImg > 0 && links.length > 1,
+            }
+          )}
+        >
+          <svg
+            className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 6 10"
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M5 1 1 5l4 4"
             />
-          </a>
+          </svg>
+          <span className="sr-only">Previous</span>
+        </span>
+      </button>
+
+      <div className="w-1/2 h-1/2 rounded-xl border border-red-700 relative overflow-hidden">
+        <div
+          ref={mainCarouselRef}
+          style={{
+            left: -currentImg * mainCarouselSize.width,
+          }}
+          className="flex transition-all duration-300 absolute w-full h-full"
+        >
+          {links.map((link, index) => {
+            return (
+              <Link
+                key={index}
+                href={link.href}
+                className="relative shrink-0 w-full h-full"
+              >
+                <Image
+                  className="pointer-events-none"
+                  alt={`carousel-image-${index}`}
+                  fill
+                  src={link.image}
+                />
+              </Link>
+            );
+          })}
         </div>
       </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
+      <button
+        className={clsx(
+          "z-30 flex items-center justify-center h-full px-4 group",
+          {
+            "opacity-50": currentImg === links.length - 1,
+          },
+          {
+            "cursor-pointer": currentImg < links.length - 1,
+          }
+        )}
+        data-carousel-next
+        onClick={() => {
+          setCurrentImg((next) => next + 1);
+        }}
+        disabled={currentImg === links.length - 1}
+      >
+        <span
+          className={clsx(
+            "inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30",
+            {
+              "group-hover:bg-gray-600/50 group-focus:outline-none":
+                currentImg < links.length - 1,
+            }
+          )}
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+          <svg
+            className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 6 10"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="m1 9 4-4-4-4"
+            />
+          </svg>
+          <span className="sr-only">Next</span>
+        </span>
+      </button>
     </main>
   );
 }
