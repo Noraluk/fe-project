@@ -40,7 +40,7 @@ export default function Home() {
 
   const links = [
     {
-      href: "/pokemon",
+      href: "/pokemon/pokedex",
       name: "Pokemon",
       image:
         "https://ichef.bbci.co.uk/news/976/cpsprodpb/147C0/production/_132740938_indeximage.jpg.webp",

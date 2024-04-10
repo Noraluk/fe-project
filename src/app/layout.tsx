@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Press_Start_2P } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import ReactQueryProvider from "@/components/react_query_provider";
 
-const mainFont = Press_Start_2P({
+const mainFont = Inter({
   weight: "400",
   subsets: ["latin"],
 });
@@ -18,8 +19,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={mainFont.className}>{children}</body>
-    </html>
+    <ReactQueryProvider>
+      <html lang="en">
+        <body className={mainFont.className}>{children}</body>
+      </html>
+    </ReactQueryProvider>
   );
 }
