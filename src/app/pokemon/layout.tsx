@@ -9,7 +9,6 @@ export default function Layout({
   return (
     <div className="flex flex-col h-screen bg-slate-200">
       <Menu />
-      <br />
       <hr className="h-0.5 bg-black mx-20" />
       <br />
       {children}

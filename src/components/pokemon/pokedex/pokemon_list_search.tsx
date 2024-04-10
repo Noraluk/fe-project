@@ -39,7 +39,7 @@ export default function PokemonListSearch() {
         <input
           name="pokemonName"
           placeholder="Search your Pokemon!"
-          className="block w-3/4 text-lg outline-2 placeholder:text-gray-500 h-10 grow focus:outline-none text-black"
+          className="block w-3/4 text-lg outline-2 placeholder:text-gray-500 h-10 grow focus:outline-none"
           onChange={(e) => {
             setSearchingError(isPokemonNameRight(e.target.value));
             setPokemonName(e.target.value);
@@ -57,7 +57,7 @@ export default function PokemonListSearch() {
           type="submit"
           disabled={searchingError}
         >
-          <Pokeball className="h-10 p-1" />
+          <Pokeball className="h-10 p-1 text-white" />
         </button>
       </div>
       {searchingError && (
