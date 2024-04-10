@@ -17,6 +17,7 @@ export default function PokemonListSearch() {
 
   function handleSearch(term: string) {
     const params = new URLSearchParams(searchParams);
+    console.log(term, pathname, params);
     if (term) {
       params.set("query", term);
     } else {
@@ -26,7 +27,7 @@ export default function PokemonListSearch() {
   }
 
   return (
-    <form>
+    <>
       <div
         className={clsx(
           "flex justify-around items-center py-3 bg-white rounded-xl px-5",
@@ -38,7 +39,7 @@ export default function PokemonListSearch() {
         <input
           name="pokemonName"
           placeholder="Search your Pokemon!"
-          className="block w-3/4 text-lg outline-2 placeholder:text-gray-500 h-10 grow focus:outline-none"
+          className="block w-3/4 text-lg outline-2 placeholder:text-gray-500 h-10 grow focus:outline-none text-black"
           onChange={(e) => {
             setSearchingError(isPokemonNameRight(e.target.value));
             setPokemonName(e.target.value);
@@ -56,7 +57,7 @@ export default function PokemonListSearch() {
           type="submit"
           disabled={searchingError}
         >
-          <Pokeball className="h-10 text-white p-1" />
+          <Pokeball className="h-10 p-1" />
         </button>
       </div>
       {searchingError && (
@@ -66,7 +67,7 @@ export default function PokemonListSearch() {
           </p>
         </div>
       )}
-    </form>
+    </>
   );
 }
 

@@ -17,6 +17,7 @@ export default function Page({
   };
 }) {
   const [pokemonName, setPokemonName] = useState("");
+  console.log(searchParams?.query);
 
   return (
     <div className="flex justify-center mx-20 h-full overflow-hidden">

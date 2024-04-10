@@ -24,7 +24,7 @@ export async function PokemonDetail({
   const pd = await fetchPokemonDetail(pokemonName);
 
   return (
-    <div className="flex flex-col items-center h-full mb-1 mx-1">
+    <div className="flex flex-col items-center h-full mb-1 mx-1 text-black">
       <Image
         src={pd?.pokemon.sprites?.other["official-artwork"].front_default ?? ""}
         alt=""
