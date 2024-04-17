@@ -1,13 +1,18 @@
-interface PokemonsResponse {
-  count: number;
-  next: string;
-  previous?: any;
-  results: Pokemon[];
+export interface PokemonsResponse {
+  data: PokemonModel[];
+  totle_records: number;
+  current_page: number;
+  total_pages: number;
 }
 
-interface Pokemon {
+export interface PokemonModel {
+  id: number;
   name: string;
-  url: string;
+  sprite_front_default_showdown_url: string;
+  pokemon_types: Pokemontype[];
 }
 
-export default PokemonsResponse
+export interface Pokemontype {
+  name: string;
+}
+

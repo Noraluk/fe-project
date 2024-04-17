@@ -47,3 +47,41 @@ interface IPokemonType {
     'steel': '/pokemon_types/steel.png',
     'fairy': '/pokemon_types/fairy.png',
   }
+
+  interface IPokemonStat {
+    [key: string]: {
+      name: string,
+      color: string,
+    }
+  }
+
+  export const pokemonStat: IPokemonStat = {
+    'hp': {
+      name: "HP",
+      color: "bg-red-500",
+    },
+    'attack': {
+      name: "ATK",
+      color: "bg-red-500",
+    },
+    'defense': {
+      name: "DEF",
+      color: "bg-yellow-500",
+    },
+    'special-attack': {
+      name: "SpA",
+      color: "bg-sky-500",
+    },
+    'special-defense': {
+      name: "SpD",
+      color: "bg-lime-500",
+    },
+    'speed': {
+      name: "SPD",
+      color: "bg-pink-500",
+    },
+    'total': {
+      name: "TOT",
+      color: "bg-indigo-400",
+    }
+  }

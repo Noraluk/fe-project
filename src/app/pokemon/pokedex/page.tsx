@@ -16,8 +16,7 @@ export default function Page({
     page?: string;
   };
 }) {
-  const [pokemonName, setPokemonName] = useState("");
-  console.log(searchParams?.query);
+  const [pokemonID, setPokemonID] = useState(0);
 
   return (
     <div className="flex justify-center mx-20 h-full overflow-hidden">
@@ -25,18 +24,18 @@ export default function Page({
         <PokemonListSearch />
         <br />
         <PokemonList
-          setPokemonName={setPokemonName}
+          setPokemonID={setPokemonID}
           pokemonSearch={searchParams?.query ?? ""}
         />
       </div>
       <div className="flex flex-col w-[450px]">
         <div className="h-1/6" />
         <div className="grow bg-white w-full h-full rounded-2xl relative">
-          {pokemonName.length > 0 && (
+          {pokemonID > 0 && (
             <Suspense fallback={<PokemonDetailLoading />}>
               <PokemonDetail
-                pokemonName={pokemonName}
-                setPokemonName={setPokemonName}
+                pokemonID={pokemonID}
+                setPokemonID={setPokemonID}
               />
             </Suspense>
           )}

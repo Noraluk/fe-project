@@ -1,17 +1,16 @@
-import { fetchPokemonsDetail } from "@/api/pokemons_api";
-import PokemonResponse from "@/models/pokemon_model";
+import { fetchPokemons } from "@/api/pokemons_api";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import Image from "next/image";
 import { color } from "@/constants/pokemon_constants";
-import { MoonLoader } from "react-spinners";
+import { PokemonModel } from "@/models/pokemons_model";
 
 export default function PokemonList({
-  setPokemonName,
+  setPokemonID,
   pokemonSearch = "",
 }: {
-  setPokemonName: Dispatch<SetStateAction<string>>;
+  setPokemonID: Dispatch<SetStateAction<number>>;
   pokemonSearch?: string;
 }) {
   const { ref, inView } = useInView();
@@ -24,12 +23,10 @@ export default function PokemonList({
     isLoading,
   } = useInfiniteQuery({
     queryKey: ["pokemons"],
-    queryFn: fetchPokemonsDetail,
+    queryFn: fetchPokemons,
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
-      const nextPage =
-        lastPage.length === 20 ? allPages.length * 20 : undefined;
-      return nextPage;
+      return lastPage.current_page + 1;
     },
   });
 
@@ -51,19 +48,19 @@ export default function PokemonList({
     <>
       <div className="grid grid-cols-3 gap-x-4 gap-y-10 overflow-y-scroll py-7 pr-4">
         {pokemons?.pages.map((page, pageIndex) =>
-          page
-            .filter((page) => {
+          page.data
+            .filter((pokemon) => {
               if (pokemonSearch.length <= 0) return true;
-              return page.name.includes(pokemonSearch);
+              return pokemon.name.includes(pokemonSearch);
             })
-            .map((pokemon: PokemonResponse, index: number) => {
-              if (page.length == index + 1) {
+            .map((pokemon: PokemonModel, index: number) => {
+              if (page.data.length == index + 1) {
                 return (
                   <Pokemon
                     key={index}
                     pokemon={pokemon}
                     innerRef={ref}
-                    setPokemonName={setPokemonName}
+                    setPokemonID={setPokemonID}
                   />
                 );
               }
@@ -71,7 +68,7 @@ export default function PokemonList({
                 <Pokemon
                   key={index}
                   pokemon={pokemon}
-                  setPokemonName={setPokemonName}
+                  setPokemonID={setPokemonID}
                 />
               );
             })
@@ -84,11 +81,11 @@ export default function PokemonList({
 
 function Pokemon({
   pokemon,
-  setPokemonName,
+  setPokemonID,
   innerRef,
 }: {
-  pokemon: PokemonResponse;
-  setPokemonName: Dispatch<SetStateAction<string>>;
+  pokemon: PokemonModel;
+  setPokemonID: Dispatch<SetStateAction<number>>;
   innerRef?: (node?: Element | null | undefined) => void;
 }) {
   return (
@@ -96,11 +93,11 @@ function Pokemon({
       className="flex flex-col items-center justify-end py-5 gap-1 bg-white rounded-xl h-36 shadow-lg relative text-center hover:bg-gray-300 hover:cursor-pointer"
       ref={innerRef}
       onClick={(e) => {
-        setPokemonName(pokemon.name);
+        setPokemonID(pokemon.id);
       }}
     >
       <Image
-        src={pokemon.sprites.other.showdown.front_default}
+        src={pokemon.sprite_front_default_showdown_url}
         alt=""
         width="0"
         height="0"
@@ -110,17 +107,17 @@ function Pokemon({
       <p className="text-gray-600 font-bold text-sm">{`#${pokemon.id}`}</p>
       <p className="font-bold text-black">{pokemon.name}</p>
       <div className="flex gap-2">
-        {pokemon.types.map((pokemonType, index) => {
+        {pokemon.pokemon_types.map((pokemonType, index) => {
           return (
             <div
               key={index}
               style={{
-                backgroundColor: color[pokemonType.type.name],
+                backgroundColor: color[pokemonType.name],
               }}
               className="rounded-lg px-1.5 py-1"
             >
               <p style={{ fontSize: "12px" }} className="font-bold uppercase">
-                {pokemonType.type.name}
+                {pokemonType.name}
               </p>
             </div>
           );
