@@ -5,11 +5,11 @@ import { useQuery } from "@tanstack/react-query";
 import { MoonLoader } from "react-spinners";
 import Image from "next/image";
 
-export default function ItemList({ offset }: { offset: number }) {
+export default function ItemList({ page }: { page: number }) {
   const { isLoading, data, error } = useQuery({
-    queryKey: ["items", offset],
+    queryKey: ["items", page],
     queryFn: async () => {
-      const data = await fetchItems(offset);
+      const data = await fetchItems(page);
       return data;
     },
   });
@@ -49,7 +49,7 @@ export default function ItemList({ offset }: { offset: number }) {
               );
             })}
           {!isLoading &&
-            data?.map((item, index) => {
+            data?.data.map((item, index) => {
               return (
                 <tr
                   key={index}
@@ -60,7 +60,7 @@ export default function ItemList({ offset }: { offset: number }) {
                   </td>
                   <td className="flex items-center whitespace-nowrap h-12 pl-6 pr-3 w-[500px]">
                     <Image
-                      src={item.sprites.default}
+                      src={item.sprite_url}
                       alt={item.name}
                       width={0}
                       height={0}

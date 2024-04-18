@@ -1,6 +1,6 @@
 export interface PokemonsResponse {
   data: PokemonModel[];
-  totle_records: number;
+  total_records: number;
   current_page: number;
   total_pages: number;
 }

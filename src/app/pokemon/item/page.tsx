@@ -12,7 +12,7 @@ export default function Page({
 
   return (
     <div className="h-screen mx-40">
-      <ItemList offset={(currentPage - 1) * 10} />
+      <ItemList page={currentPage} />
       <br />
       <ItemPagination />
     </div>

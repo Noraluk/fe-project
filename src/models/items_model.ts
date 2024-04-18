@@ -1,11 +1,14 @@
-interface ItemsResponse {
-  count: number;
-  next: string;
-  previous?: any;
-  results: Result[];
+export interface ItemsResponse {
+  data: Item[];
+  totle_records: number;
+  current_page: number;
+  total_pages: number;
 }
 
-interface Result {
+export interface Item {
+  id: number;
+  item_id: number;
   name: string;
-  url: string;
+  cost: number;
+  sprite_url: string;
 }
