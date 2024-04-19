@@ -17,7 +17,6 @@ export default function PokemonListSearch() {
 
   function handleSearch(term: string) {
     const params = new URLSearchParams(searchParams);
-    console.log(term, pathname, params);
     if (term) {
       params.set("query", term);
     } else {
@@ -43,6 +42,11 @@ export default function PokemonListSearch() {
           onChange={(e) => {
             setSearchingError(isPokemonNameRight(e.target.value));
             setPokemonName(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key == "Enter") {
+              handleSearch(pokemonName);
+            }
           }}
           defaultValue={searchParams.get("query")?.toString()}
         />

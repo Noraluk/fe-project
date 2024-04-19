@@ -22,10 +22,15 @@ export default function PokemonList({
     isFetchingNextPage,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: ["pokemons"],
-    queryFn: fetchPokemons,
-    initialPageParam: 0,
+    queryKey: ["pokemons", pokemonSearch],
+    queryFn: ({ pageParam = 1, queryKey }) => {
+      return fetchPokemons(pageParam, queryKey[1]);
+    },
+    initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.current_page === lastPage.total_pages) {
+        return undefined;
+      }
       return lastPage.current_page + 1;
     },
   });
@@ -48,30 +53,25 @@ export default function PokemonList({
     <>
       <div className="grid grid-cols-3 gap-x-4 gap-y-10 overflow-y-scroll py-7 pr-4">
         {pokemons?.pages.map((page, pageIndex) =>
-          page.data
-            .filter((pokemon) => {
-              if (pokemonSearch.length <= 0) return true;
-              return pokemon.name.includes(pokemonSearch);
-            })
-            .map((pokemon: PokemonModel, index: number) => {
-              if (page.data.length == index + 1) {
-                return (
-                  <Pokemon
-                    key={index}
-                    pokemon={pokemon}
-                    innerRef={ref}
-                    setPokemonID={setPokemonID}
-                  />
-                );
-              }
+          page.data.map((pokemon: PokemonModel, index: number) => {
+            if (page.data.length == index + 1) {
               return (
                 <Pokemon
                   key={index}
                   pokemon={pokemon}
+                  innerRef={ref}
                   setPokemonID={setPokemonID}
                 />
               );
-            })
+            }
+            return (
+              <Pokemon
+                key={index}
+                pokemon={pokemon}
+                setPokemonID={setPokemonID}
+              />
+            );
+          })
         )}
       </div>
       {isFetchingNextPage && <Loading innerRef={ref} />}

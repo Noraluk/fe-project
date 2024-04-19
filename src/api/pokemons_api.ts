@@ -4,8 +4,8 @@ import { PokemonsResponse } from "@/models/pokemons_model";
 import axios from "axios";
 
 
-export async function fetchPokemons({pageParam}: {pageParam: number}): Promise<PokemonsResponse> {
-	const res = await axios.get(`http://localhost:8080/api/pokemons?page=${pageParam}&page_size=20`)
+export async function fetchPokemons(pageParam: number,name: string): Promise<PokemonsResponse> {
+	const res = await axios.get(`http://localhost:8080/api/pokemons?page=${pageParam}&page_size=20&name=${name}`)
 	return res.data
 }
 
