@@ -4,8 +4,10 @@ import Pokeball from "@/icons/pokeball";
 import { isPokemonNameRight } from "@/schemas/pokedex_schema";
 import clsx from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { MoonLoader } from "react-spinners";
+import styles from "@/components/pokemon/pokedex/pokemon_list_search.module.css";
+import { Option } from "@/models/option_model";
 
 export default function PokemonListSearch() {
   const searchParams = useSearchParams();
@@ -14,14 +16,34 @@ export default function PokemonListSearch() {
 
   const [pokemonName, setPokemonName] = useState("");
   const [searchingError, setSearchingError] = useState(false);
+  const [order, setOrder] = useState("asc");
+  const [pokemonType, setPokemonType] = useState("");
 
-  function handleSearch(term: string) {
+  function handleSearch(
+    pokemonName: string,
+    order: string,
+    pokemonType: string
+  ) {
     const params = new URLSearchParams(searchParams);
-    if (term) {
-      params.set("query", term);
+    if (pokemonName) {
+      params.set("pokemon_name", pokemonName);
     } else {
-      params.delete("query");
+      params.delete("pokemon_name");
     }
+
+    if (order) {
+      params.set("order", order);
+    } else {
+      params.delete("order");
+    }
+
+    if (pokemonType) {
+      params.set("pokemon_type", pokemonType);
+    } else {
+      console.log("foo");
+      params.delete("pokemon_type");
+    }
+
     replace(`${pathname}?${params.toString()}`);
   }
 
@@ -45,7 +67,7 @@ export default function PokemonListSearch() {
           }}
           onKeyDown={(e) => {
             if (e.key == "Enter") {
-              handleSearch(pokemonName);
+              handleSearch(pokemonName, order, pokemonType);
             }
           }}
           defaultValue={searchParams.get("query")?.toString()}
@@ -56,7 +78,7 @@ export default function PokemonListSearch() {
             { "hover:bg-red-500": !searchingError }
           )}
           onClick={() => {
-            handleSearch(pokemonName);
+            handleSearch(pokemonName, order, pokemonType);
           }}
           type="submit"
           disabled={searchingError}
@@ -71,6 +93,114 @@ export default function PokemonListSearch() {
           </p>
         </div>
       )}
+      <br />
+      <div className="flex gap-x-2">
+        <Filter
+          className="w-36"
+          value={order}
+          setValue={(value) => {
+            console.log(`value ${value}`);
+            setOrder(value);
+            handleSearch(pokemonName, value, pokemonType);
+          }}
+          options={[
+            {
+              value: "asc",
+              label: "Ascending",
+            },
+            {
+              value: "desc",
+              label: "Descending",
+            },
+          ]}
+        />
+        <Filter
+          className="w-28 capitalize"
+          value={pokemonType}
+          setValue={(value) => {
+            setPokemonType(value);
+            handleSearch(pokemonName, order, value);
+          }}
+          options={[
+            {
+              value: "",
+              label: "All",
+            },
+            {
+              value: "normal",
+              label: "normal",
+            },
+            {
+              value: "fire",
+              label: "fire",
+            },
+            {
+              value: "water",
+              label: "water",
+            },
+            {
+              value: "electric",
+              label: "electric",
+            },
+            {
+              value: "grass",
+              label: "grass",
+            },
+            {
+              value: "ice",
+              label: "ice",
+            },
+            {
+              value: "fighting",
+              label: "fighting",
+            },
+            {
+              value: "poison",
+              label: "poison",
+            },
+            {
+              value: "ground",
+              label: "ground",
+            },
+            {
+              value: "flying",
+              label: "flying",
+            },
+            {
+              value: "psychic",
+              label: "psychic",
+            },
+            {
+              value: "bug",
+              label: "bug",
+            },
+            {
+              value: "rock",
+              label: "rock",
+            },
+            {
+              value: "ghost",
+              label: "ghost",
+            },
+            {
+              value: "dragon",
+              label: "dragon",
+            },
+            {
+              value: "dark",
+              label: "dark",
+            },
+            {
+              value: "steel",
+              label: "steel",
+            },
+            {
+              value: "fairy",
+              label: "fairy",
+            },
+          ]}
+        />
+      </div>
     </>
   );
 }
@@ -80,5 +210,45 @@ export function PokemonDetailLoading() {
     <div className="flex items-center justify-center h-full">
       <MoonLoader />
     </div>
+  );
+}
+
+function Filter({
+  className,
+  value,
+  setValue,
+  optionName,
+  options,
+  defaultValue,
+}: {
+  className?: string;
+  value: string;
+  setValue: (value: string) => void;
+  optionName?: string;
+  options: Option[];
+  defaultValue?: string;
+}) {
+  return (
+    <select
+      className={clsx(
+        "rounded-xl p-3 text-slate-500 bg-white py-2 px-4",
+        styles.dropdown,
+        className
+      )}
+      defaultValue={defaultValue}
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+    >
+      {optionName != undefined && (
+        <option value="" disabled>
+          {optionName!}
+        </option>
+      )}
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
   );
 }

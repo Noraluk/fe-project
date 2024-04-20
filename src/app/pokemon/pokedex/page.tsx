@@ -12,7 +12,9 @@ export default function Page({
   searchParams,
 }: {
   searchParams?: {
-    query?: string;
+    pokemon_name?: string;
+    pokemon_type?: string;
+    order?: string;
     page?: string;
   };
 }) {
@@ -25,7 +27,9 @@ export default function Page({
         <br />
         <PokemonList
           setPokemonID={setPokemonID}
-          pokemonSearch={searchParams?.query ?? ""}
+          pokemonSearch={searchParams?.pokemon_name ?? ""}
+          pokemonType={searchParams?.pokemon_type ?? ""}
+          order={searchParams?.order}
         />
       </div>
       <div className="flex flex-col w-[450px]">

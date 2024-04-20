@@ -7,6 +7,7 @@ export interface PokemonsResponse {
 
 export interface PokemonModel {
   id: number;
+  pokemon_id: number;
   name: string;
   sprite_front_default_showdown_url: string;
   pokemon_types: Pokemontype[];

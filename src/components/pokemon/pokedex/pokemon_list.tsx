@@ -9,9 +9,15 @@ import { PokemonModel } from "@/models/pokemons_model";
 export default function PokemonList({
   setPokemonID,
   pokemonSearch = "",
+  pokemonType = "",
+  order = "asc",
+  by = "id",
 }: {
   setPokemonID: Dispatch<SetStateAction<number>>;
   pokemonSearch?: string;
+  pokemonType?: string;
+  order?: string;
+  by?: string;
 }) {
   const { ref, inView } = useInView();
 
@@ -22,9 +28,15 @@ export default function PokemonList({
     isFetchingNextPage,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: ["pokemons", pokemonSearch],
+    queryKey: ["pokemons", pokemonSearch, pokemonType, order, by],
     queryFn: ({ pageParam = 1, queryKey }) => {
-      return fetchPokemons(pageParam, queryKey[1]);
+      return fetchPokemons(
+        pageParam,
+        queryKey[1],
+        queryKey[2],
+        queryKey[3],
+        queryKey[4]
+      );
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
@@ -104,7 +116,7 @@ function Pokemon({
         className="w-auto h-16"
         unoptimized
       />
-      <p className="text-gray-600 font-bold text-sm">{`#${pokemon.id}`}</p>
+      <p className="text-gray-600 font-bold text-sm">{`#${pokemon.pokemon_id}`}</p>
       <p className="font-bold text-black">{pokemon.name}</p>
       <div className="flex gap-2">
         {pokemon.pokemon_types.map((pokemonType, index) => {
