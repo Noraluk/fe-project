@@ -1,0 +1,10 @@
+.scrollbar::-webkit-scrollbar {
+    width: 5px; /* Adjust as needed */
+  }
+
+/* This styles the scrollbar itself */
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3); /* Adjust as needed */
+  border-radius: 6px; /* Adjust as needed */
+}
+

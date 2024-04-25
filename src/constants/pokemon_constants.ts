@@ -85,3 +85,24 @@ interface IPokemonType {
       color: "bg-indigo-400",
     }
   }
+
+  export const PokemonTypes =  [
+    'normal',
+    'fire',
+    'water',
+    'electric',
+    'grass',
+    'ice',
+    'fighting',
+    'poison',
+    'ground',
+    'flying',
+    'psychic',
+    'bug',
+    'rock',
+    'ghost',
+    'dragon',
+    'dark',
+    'steel',
+    'fairy',
+  ]
