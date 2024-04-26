@@ -24,3 +24,8 @@ export async function createPokemon(req: CreatedPokemon) {
 		const res = await axios.post('http://localhost:8080/api/pokemons', req)
 		return res.data
 }
+
+export async function deletePokemon(id: number): Promise<Pokemon> {
+	const res = await axios.delete(`http://localhost:8080/api/pokemons/${id}`)
+	return res.data
+}

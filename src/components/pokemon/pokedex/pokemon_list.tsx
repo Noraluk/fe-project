@@ -1,10 +1,11 @@
-import { fetchPokemons } from "@/api/pokemons_api";
+import { deletePokemon, fetchPokemons } from "@/api/pokemons_api";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import Image from "next/image";
 import { color } from "@/constants/pokemon_constants";
 import { PokemonModel } from "@/models/pokemons_model";
+import { XCircleIcon } from "@heroicons/react/16/solid";
 
 export default function PokemonList({
   setPokemonID,
@@ -27,6 +28,7 @@ export default function PokemonList({
     hasNextPage,
     isFetchingNextPage,
     isLoading,
+    refetch,
   } = useInfiniteQuery({
     queryKey: ["pokemons", pokemonSearch, pokemonType, order, by],
     queryFn: ({ pageParam = 1, queryKey }) => {
@@ -73,6 +75,9 @@ export default function PokemonList({
                   pokemon={pokemon}
                   innerRef={ref}
                   setPokemonID={setPokemonID}
+                  onClick={() => {
+                    refetch();
+                  }}
                 />
               );
             }
@@ -81,6 +86,9 @@ export default function PokemonList({
                 key={index}
                 pokemon={pokemon}
                 setPokemonID={setPokemonID}
+                onClick={() => {
+                  refetch();
+                }}
               />
             );
           })
@@ -95,46 +103,58 @@ function Pokemon({
   pokemon,
   setPokemonID,
   innerRef,
+  onClick,
 }: {
   pokemon: PokemonModel;
   setPokemonID: Dispatch<SetStateAction<number>>;
   innerRef?: (node?: Element | null | undefined) => void;
+  onClick: () => void;
 }) {
   return (
-    <div
-      className="flex flex-col items-center justify-end py-5 gap-1 bg-white rounded-xl h-36 shadow-lg relative text-center hover:bg-gray-300 hover:cursor-pointer"
-      ref={innerRef}
-      onClick={(e) => {
-        setPokemonID(pokemon.id);
-      }}
-    >
-      <Image
-        src={pokemon.sprite_front_default_showdown_url}
-        alt=""
-        width="0"
-        height="0"
-        className="w-auto h-16"
-        unoptimized
-      />
-      <p className="text-gray-600 font-bold text-sm">{`#${pokemon.pokemon_id}`}</p>
-      <p className="font-bold text-black">{pokemon.name}</p>
-      <div className="flex gap-2">
-        {pokemon.pokemon_types.map((pokemonType, index) => {
-          return (
-            <div
-              key={index}
-              style={{
-                backgroundColor: color[pokemonType.name],
-              }}
-              className="rounded-lg px-1.5 py-1"
-            >
-              <p style={{ fontSize: "12px" }} className="font-bold uppercase">
-                {pokemonType.name}
-              </p>
-            </div>
-          );
-        })}
+    <div className="relative">
+      <div
+        className="flex flex-col items-center justify-end py-5 gap-1 bg-white rounded-xl h-36 shadow-lg relative text-center hover:bg-gray-300 hover:cursor-pointer"
+        ref={innerRef}
+        onClick={(e) => {
+          setPokemonID(pokemon.id);
+        }}
+      >
+        <Image
+          src={pokemon.sprite_front_default_showdown_url}
+          alt=""
+          width="0"
+          height="0"
+          className="w-auto h-16"
+          unoptimized
+        />
+        <p className="text-gray-600 font-bold text-sm">{`#${pokemon.pokemon_id}`}</p>
+        <p className="font-bold text-black">{pokemon.name}</p>
+        <div className="flex gap-2">
+          {pokemon.pokemon_types.map((pokemonType, index) => {
+            return (
+              <div
+                key={index}
+                style={{
+                  backgroundColor: color[pokemonType.name],
+                }}
+                className="rounded-lg px-1.5 py-1"
+              >
+                <p style={{ fontSize: "12px" }} className="font-bold uppercase">
+                  {pokemonType.name}
+                </p>
+              </div>
+            );
+          })}
+        </div>
       </div>
+      <XCircleIcon
+        className="absolute w-8 h-8 top-0 right-0 cursor-pointer"
+        onClick={async (e) => {
+          await deletePokemon(pokemon.id);
+          onClick();
+        }}
+      />
+      ;
     </div>
   );
 }
