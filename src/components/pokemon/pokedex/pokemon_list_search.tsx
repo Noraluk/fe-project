@@ -16,17 +16,20 @@ export default function PokemonListSearch() {
   const pathname = usePathname();
   const { replace } = useRouter();
 
+  const params = new URLSearchParams(searchParams);
+
   const [pokemonName, setPokemonName] = useState("");
   const [searchingError, setSearchingError] = useState(false);
-  const [order, setOrder] = useState("asc");
-  const [pokemonType, setPokemonType] = useState("");
+  const [order, setOrder] = useState(params.get("order") ?? "asc");
+  const [pokemonType, setPokemonType] = useState(
+    params.get("pokemon_type") ?? ""
+  );
 
   function handleSearch(
     pokemonName: string,
     order: string,
     pokemonType: string
   ) {
-    const params = new URLSearchParams(searchParams);
     if (pokemonName) {
       params.set("pokemon_name", pokemonName);
     } else {
@@ -42,7 +45,6 @@ export default function PokemonListSearch() {
     if (pokemonType) {
       params.set("pokemon_type", pokemonType);
     } else {
-      console.log("foo");
       params.delete("pokemon_type");
     }
 
@@ -72,7 +74,7 @@ export default function PokemonListSearch() {
               handleSearch(pokemonName, order, pokemonType);
             }
           }}
-          defaultValue={searchParams.get("query")?.toString()}
+          defaultValue={searchParams.get("pokemon_name")?.toString()}
         />
         <button
           className={clsx(
