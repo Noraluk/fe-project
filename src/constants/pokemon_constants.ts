@@ -105,4 +105,4 @@ interface IPokemonType {
     'dark',
     'steel',
     'fairy',
-  ]
+  ] as const

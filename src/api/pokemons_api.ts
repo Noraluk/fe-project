@@ -1,4 +1,4 @@
-import { CreatedPokemon } from "@/components/pokemon/pokedex/created_pokemon";
+import { CreatedPokemon } from "@/models/created_pokemon";
 import { ItemsResponse } from "@/models/items_model";
 import { Pokemon } from "@/models/pokemon_model";
 import { PokemonsResponse } from "@/models/pokemons_model";
@@ -21,10 +21,6 @@ export async function fetchItems(pageParam: number) : Promise<ItemsResponse> {
 }
 
 export async function createPokemon(req: CreatedPokemon) {
-	try {
 		const res = await axios.post('http://localhost:8080/api/pokemons', req)
-	} catch (error) {
-		console.log(error)
-		throw Error("foo")
-	}
+		return res.data
 }

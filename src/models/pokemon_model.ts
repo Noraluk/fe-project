@@ -14,7 +14,7 @@ export interface Pokemon {
   base_experience: number;
   pokemon_weaknesses: Pokemontype[];
   pokemon_stats: Pokemonstat[];
-  evolved_pokemon: Evolvedpokemon;
+  evolved_pokemon?: Evolvedpokemon;
   next_pokemon: Nextpokemon;
   prev_pokemon: Nextpokemon;
 }

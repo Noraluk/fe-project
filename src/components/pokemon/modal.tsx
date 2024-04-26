@@ -1,7 +1,6 @@
 "use client";
 
 import { XCircleIcon } from "@heroicons/react/16/solid";
-import { useRouter } from "next/router";
 import { Dispatch, SetStateAction } from "react";
 
 export function Modal({

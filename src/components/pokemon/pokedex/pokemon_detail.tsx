@@ -135,10 +135,10 @@ export async function PokemonDetail({
               style={{ fontSize: "10px" }}
               className="text-slate-500 font-bold"
             >{`Lvl ${
-              pokemon.evolved_pokemon.evolved_pokemon?.minumum_level ?? "?"
+              pokemon.evolved_pokemon?.evolved_pokemon?.minumum_level ?? "?"
             }`}</p>
           </div>
-          {pokemon.evolved_pokemon.evolved_pokemon && (
+          {pokemon.evolved_pokemon?.evolved_pokemon && (
             <Image
               src={
                 pokemon.evolved_pokemon.evolved_pokemon
@@ -156,11 +156,11 @@ export async function PokemonDetail({
               style={{ fontSize: "10px" }}
               className="text-slate-500 font-bold"
             >{`Lvl ${
-              pokemon.evolved_pokemon.evolved_pokemon?.evolved_pokemon
+              pokemon.evolved_pokemon?.evolved_pokemon?.evolved_pokemon
                 ?.minumum_level ?? "?"
             }`}</p>
           </div>
-          {pokemon.evolved_pokemon.evolved_pokemon?.evolved_pokemon && (
+          {pokemon.evolved_pokemon?.evolved_pokemon?.evolved_pokemon && (
             <Image
               src={
                 pokemon.evolved_pokemon.evolved_pokemon?.evolved_pokemon
@@ -193,7 +193,7 @@ export async function PokemonDetail({
                   unoptimized
                 />
                 <p className="font-bold text-xs">{pokemon.prev_pokemon.name}</p>
-                <p className="text-xs text-gray-600">{`#${pokemon.prev_pokemon.id}`}</p>
+                <p className="text-xs text-gray-600">{`#${pokemon.prev_pokemon.pokemon_id}`}</p>
               </div>
             )}
           </div>
@@ -204,7 +204,7 @@ export async function PokemonDetail({
                 className="flex items-center gap-x-1 hover:cursor-pointer"
                 onClick={(e) => setPokemonID(pokemon.next_pokemon.id)}
               >
-                <p className="text-xs text-gray-600">{`#${pokemon.next_pokemon.id}`}</p>
+                <p className="text-xs text-gray-600">{`#${pokemon.next_pokemon.pokemon_id}`}</p>
                 <p className="font-bold text-xs">{pokemon.next_pokemon.name}</p>
                 <Image
                   src={pokemon.next_pokemon.sprite_front_default_showdown_url}
