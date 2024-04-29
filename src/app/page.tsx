@@ -30,10 +30,9 @@ export default function Home() {
             placeholder="password"
             className="rounded-md border border-gray-200 p-2 w-72"
           />
-          <button
-            className="absolute inset-y-0 right-0"
+          <div
+            className="absolute inset-y-0 right-0 cursor-pointer"
             onClick={(e) => {
-              e.preventDefault();
               setShowPassword((state) => !state);
             }}
           >
@@ -42,7 +41,7 @@ export default function Home() {
             ) : (
               <EyeSlashIcon className="h-full w-10 p-1" />
             )}
-          </button>
+          </div>
         </div>
 
         <button className="rounded-md bg-amber-400 font-bold p-2 w-72">
