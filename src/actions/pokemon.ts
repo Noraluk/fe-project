@@ -11,8 +11,6 @@ const FormSchema = z.object({
 	pokemon_types: z.array(z.enum(PokemonTypes)),
 });
 
-
-
 export async function createPokemonAction(req: CreatedPokemon) {
 	const validatedFields = FormSchema.safeParse({
 		pokemon_id: req.pokemon_id,
@@ -23,7 +21,6 @@ export async function createPokemonAction(req: CreatedPokemon) {
 	 })
 	
 	if (!validatedFields.success) {
-		console.log(validatedFields.error.flatten().fieldErrors)
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'validate failed',
