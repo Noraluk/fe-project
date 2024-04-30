@@ -13,7 +13,7 @@ export type State = {
     username?: string[];
     password?: string[];
   };
-  message: string;
+  message?: string | null;
 };
 
 export async function loginAction(prevState: State, formData: FormData) {
@@ -28,10 +28,11 @@ export async function loginAction(prevState: State, formData: FormData) {
       message: "validate failed",
     };
   }
+
   try {
     let req: LoginRequest = {
-      username: formData.get("username")!.toString(),
-      password: formData.get("password")!.toString(),
+      username: validatedFields.data.username,
+      password: validatedFields.data.password,
     };
     const res = await login(req);
     if (res.status != 200) {

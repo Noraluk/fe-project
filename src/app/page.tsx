@@ -1,9 +1,10 @@
 "use client";
 
-import { State, loginAction } from "@/actions/auth";
+import { loginAction } from "@/actions/auth";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
+import clsx from "clsx";
 import { useState } from "react";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 
 export default function Home() {
   const initialState = { message: "", errors: {} };
@@ -17,37 +18,78 @@ export default function Home() {
     >
       <div className="rounded-3xl bg-white flex flex-col items-center justify-center p-10 gap-y-6">
         <p className="font-bold">Login</p>
-        <input
-          name="username"
-          type="text"
-          placeholder="username"
-          className="rounded-md border border-gray-200 p-2 w-72"
-        />
-        <div className="relative">
+        <div>
           <input
-            name="password"
-            type={showPassword ? "text" : "password"}
-            placeholder="password"
-            className="rounded-md border border-gray-200 p-2 w-72"
+            name="username"
+            type="text"
+            placeholder="username"
+            className={clsx("rounded-md border border-gray-200 p-2 w-72", {
+              "border-red-500 outline-red-500": state.errors?.username,
+            })}
+            aria-describedby="username-error"
           />
-          <div
-            className="absolute inset-y-0 right-0 cursor-pointer"
-            onClick={(e) => {
-              setShowPassword((state) => !state);
-            }}
-          >
-            {showPassword ? (
-              <EyeIcon className="h-full w-10 p-1" />
-            ) : (
-              <EyeSlashIcon className="h-full w-10 p-1" />
-            )}
+          {state.errors?.username && (
+            <div id="username-error" aria-live="polite" aria-atomic="true">
+              {state.errors.username.map((error: string) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
+        <div>
+          <div className="relative">
+            <input
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="password"
+              className={clsx("rounded-md border border-gray-200 p-2 w-72", {
+                "border-red-500 outline-red-500": state.errors?.username,
+              })}
+              aria-describedby="password-error"
+            />
+            <div
+              className="absolute inset-y-0 right-0 cursor-pointer"
+              onClick={(e) => {
+                setShowPassword((state) => !state);
+              }}
+            >
+              {showPassword ? (
+                <EyeIcon className="h-full w-10 p-1" />
+              ) : (
+                <EyeSlashIcon className="h-full w-10 p-1" />
+              )}
+            </div>
           </div>
+          {state.errors?.password && (
+            <div id="password-error" aria-live="polite" aria-atomic="true">
+              {state.errors.password.map((error: string) => (
+                <p className="mt-2 text-sm text-red-500" key={error}>
+                  {error}
+                </p>
+              ))}
+            </div>
+          )}
         </div>
 
-        <button className="rounded-md bg-amber-400 font-bold p-2 w-72">
-          Sign in
-        </button>
+        <SubmitButton />
       </div>
     </form>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      className={clsx("rounded-md bg-amber-400 font-bold p-2 w-72", {
+        "opacity-50": pending,
+      })}
+      disabled={pending}
+    >
+      {pending ? "Loading" : "Sign in"}
+    </button>
   );
 }
