@@ -1,9 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faLine,
-  faLinkedinIn,
-  faWhatsapp,
-} from "@fortawesome/free-brands-svg-icons";
+import { faLine, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { Tooltip } from "@nextui-org/react";
 
@@ -14,7 +11,7 @@ export default function Page() {
       href: "https://linkedin.com/in/noraluk-chotibuth",
       tooltip: "noraluk-chotibuth",
     },
-    { icon: faWhatsapp, href: "" },
+    { icon: faEnvelope, href: "", tooltip: "noraluk.kn@gmail.com" },
     { icon: faLine, href: "https://line.me/ti/p/fYpu5jIDOw" },
   ];
   return (
@@ -49,7 +46,7 @@ export default function Page() {
                 </Link>
               ) : (
                 <p>
-                  <Tooltip content={"+66944655757"}>
+                  <Tooltip content={contact.tooltip}>
                     <FontAwesomeIcon
                       icon={contact.icon}
                       className="w-10 cursor-pointer"
