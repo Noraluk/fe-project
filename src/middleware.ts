@@ -9,13 +9,13 @@ export default async function middleware(req: NextRequest) {
 
   const token = req.cookies.get("token")?.value;
 
-  if (!isPublicRoute && !token) {
-    return NextResponse.redirect(new URL("/", req.nextUrl));
-  }
+  // if (!isPublicRoute && !token) {
+  //   return NextResponse.redirect(new URL("/", req.nextUrl));
+  // }
 
-  if (isPublicRoute && token && !req.nextUrl.pathname.startsWith("/")) {
-    return NextResponse.redirect(new URL("/pokemon/pokedex", req.nextUrl));
-  }
+  // if (isPublicRoute && token && !req.nextUrl.pathname.startsWith("/")) {
+  //   return NextResponse.redirect(new URL("/pokemon/pokedex", req.nextUrl));
+  // }
 
   return NextResponse.next();
 }

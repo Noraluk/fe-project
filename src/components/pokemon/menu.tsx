@@ -7,7 +7,6 @@ import Image from "next/image";
 
 export default function Menu() {
   const path = usePathname();
-  console.log(path);
   const menus = [
     { name: "pokedex", href: "/pokemon/pokedex" },
     { name: "item", href: "/pokemon/item" },
