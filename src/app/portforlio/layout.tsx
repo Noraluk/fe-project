@@ -3,21 +3,32 @@
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Dispatch, SetStateAction, useState } from "react";
 
 export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [menuIndex, setMenuIndex] = useState(0);
+  const bgs = [
+    "bg-[linear-gradient(to_right,rgba(0,0,0,1),rgba(0,0,0,1),rgba(0,0,0,1),rgba(0,0,0,0.9),rgba(0,0,0,0.9),rgba(0,0,0,0.8)),url('/coding-bg.jpg')]",
+    "bg-[linear-gradient(to_right,rgba(0,0,0,1),rgba(0,0,0,1),rgba(0,0,0,1),rgba(0,0,0,0.9),rgba(0,0,0,0.9),rgba(0,0,0,0.8)),url('/coding-bg.jpg')]",
+  ];
+
   return (
-    <div className="flex flex-col h-screen w-screen bg-[linear-gradient(to_right,rgba(0,0,0,1),rgba(0,0,0,1),rgba(0,0,0,1),rgba(0,0,0,0.9),rgba(0,0,0,0.9),rgba(0,0,0,0.8)),url('/coding-bg.jpg')]">
-      <Menu />
+    <div className={`flex flex-col h-screen w-screen ${bgs[menuIndex]}`}>
+      <Menu setMenuIndex={setMenuIndex} />
       {children}
     </div>
   );
 }
 
-function Menu() {
+function Menu({
+  setMenuIndex,
+}: {
+  setMenuIndex: Dispatch<SetStateAction<number>>;
+}) {
   const path = usePathname();
   const menus = [
     { name: "home", href: "/portforlio" },
@@ -42,6 +53,9 @@ function Menu() {
                 "text-sky-300": menu.href == path,
               })}
               href={menu.href}
+              onClick={() => {
+                setMenuIndex(i);
+              }}
             >
               {menu.name}
             </Link>

@@ -9,7 +9,6 @@ export default function Page() {
     {
       icon: faLinkedinIn,
       href: "https://linkedin.com/in/noraluk-chotibuth",
-      tooltip: "noraluk-chotibuth",
     },
     { icon: faEnvelope, href: "", tooltip: "noraluk.kn@gmail.com" },
     { icon: faLine, href: "https://line.me/ti/p/fYpu5jIDOw" },
