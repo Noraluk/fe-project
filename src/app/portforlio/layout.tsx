@@ -14,6 +14,7 @@ export default function Layout({
   const bgs = [
     "bg-black/90",
     "bg-[linear-gradient(to_right,rgba(0,0,0,1),rgba(0,0,0,1),rgba(0,0,0,1),rgba(0,0,0,0.9),rgba(0,0,0,0.9),rgba(0,0,0,0.8)),url('/coding-bg.jpg')]",
+    "bg-black/90",
   ];
 
   return (
