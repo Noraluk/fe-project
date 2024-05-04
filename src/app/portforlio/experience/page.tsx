@@ -235,7 +235,7 @@ export default function Page() {
                 return (
                   <div key={i} className="flex items-center gap-x-2">
                     <div className="w-1 h-1 rounded-full bg-white"></div>
-                    <p className="text-white/50">{skill}</p>
+                    <p className="text-white font-medium">{skill}</p>
                   </div>
                 );
               }
