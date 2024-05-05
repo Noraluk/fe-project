@@ -15,6 +15,7 @@ export default function Layout({
     "bg-black/90",
     "bg-[linear-gradient(to_right,rgba(0,0,0,1),rgba(0,0,0,1),rgba(0,0,0,1),rgba(0,0,0,0.9),rgba(0,0,0,0.9),rgba(0,0,0,0.8)),url('/coding-bg.jpg')]",
     "bg-black/90",
+    "bg-black/90",
   ];
 
   return (
@@ -35,7 +36,7 @@ function Menu({
     { name: "home", href: "/portforlio" },
     { name: "about", href: "/portforlio/about" },
     { name: "experience", href: "/portforlio/experience" },
-    { name: "contact", href: "/portforlio/contact" },
+    { name: "project", href: "/portforlio/project" },
   ];
 
   return (
