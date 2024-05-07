@@ -47,5 +47,5 @@ export async function loginAction(prevState: State, formData: FormData) {
     };
   }
 
-  redirect("/pokemon/pokedex");
+  redirect("/portforlio");
 }

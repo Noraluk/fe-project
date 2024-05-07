@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import ReactQueryProvider from "@/components/react_query_provider";
-import { NextUIProvider } from "@nextui-org/react";
 import "./globals.css";
 
 const mainFont = Inter({
@@ -19,10 +18,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <ReactQueryProvider>
+    <ReactQueryProvider>
+      <html lang="en">
         <body className={mainFont.className}>{children}</body>
-      </ReactQueryProvider>
-    </html>
+      </html>
+    </ReactQueryProvider>
   );
 }

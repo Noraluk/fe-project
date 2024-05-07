@@ -9,13 +9,22 @@ export default async function middleware(req: NextRequest) {
 
   const token = req.cookies.get("token")?.value;
 
-  // if (!isPublicRoute && !token) {
-  //   return NextResponse.redirect(new URL("/", req.nextUrl));
-  // }
+  if (!isPublicRoute && !token) {
+    return NextResponse.redirect(new URL("/", req.nextUrl));
+  }
 
-  // if (isPublicRoute && token && !req.nextUrl.pathname.startsWith("/")) {
-  //   return NextResponse.redirect(new URL("/pokemon/pokedex", req.nextUrl));
-  // }
+  const prevPath = req.headers
+    .get("referer")
+    ?.replace("http://localhost:3000", "");
+  if (
+    !!!prevPath?.startsWith("/pokemon") &&
+    path.startsWith("/pokemon") &&
+    prevPath != "/portforlio/project/pokemon/web"
+  ) {
+    return NextResponse.redirect(
+      new URL("/portforlio/project/pokemon/web", req.nextUrl)
+    );
+  }
 
   return NextResponse.next();
 }
