@@ -1,228 +1,141 @@
 "use client";
 
-import { Tooltip } from "@nextui-org/react";
+import { useState } from "react";
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import clsx from "clsx";
-import { Inconsolata } from "next/font/google";
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 
-const font = Inconsolata({
-  subsets: ["latin"],
-});
+type Project = {
+  project: {
+    name: string;
+    href: string;
+  };
+  type: string;
+  language: string;
+};
 
-export default function Page() {
-  return (
-    <div className="grid grid-cols-2 h-full">
-      <div className="flex items-center justify-center">
-        <Carousel
-          images={["/project/pokemon/pokedex.png", "/project/pokemon/item.png"]}
-          className="w-full h-1/2"
-        />
-      </div>
-      <div
-        className={clsx(
-          "flex flex-col text-white py-16 rounded-xl border-2 border-white px-10 mx-20 justify-between",
-          font.className
-        )}
-      >
-        <div className="flex gap-x-4">
-          <Image src={"/pokeball.png"} alt={""} width={40} height={40} />
-          <p className="text-4xl font-bold text-blue-500">Pokemon</p>
-        </div>
-
-        <div>
-          <p className="text-2xl font-semibold text-sky-300 py-3">
-            Project Detail
-          </p>
-          <p>
-            This website displays all pokemons from first generation to last
-            generation and user can filter to scope specific pokemons and also
-            user can delete pokemon in database. In addition, user can search
-            items in pokemon to know name and cost of item.
-          </p>
-        </div>
-        <div>
-          <p className="text-2xl font-semibold text-sky-300 py-3">Tech Stack</p>
-          <div className="flex gap-x-4">
-            {[
-              { icon: "/technical_skills/nextjs.png", name: "nextjs" },
-              { icon: "/technical_skills/golang.png", name: "golang" },
-              { icon: "/technical_skills/postgresql.png", name: "postgresql" },
-              { icon: "/technical_skills/tailwind.png", name: "tailwind" },
-            ].map((stack, i) => {
-              return (
-                <Tooltip key={i} content={stack.name}>
-                  <Image src={stack.icon} alt={""} width={40} height={40} />
-                </Tooltip>
-              );
-            })}
-          </div>
-        </div>
-        <br />
-        <br />
+const columnHelper = createColumnHelper<Project>();
+const columns = [
+  columnHelper.accessor("project", {
+    header: () => <p>Name</p>,
+    cell: (info) => (
+      <div className="flex items-center pl-5 pr-20 w-96">
         <Link
-          href={"http://localhost:3000/pokemon/pokedex"}
-          className="hover:text-sky-300 font-bold self-end"
+          href={info.getValue().href}
+          className="hover:text-sky-400 capitalize"
         >
-          {`-> Link`}
+          {info.getValue().name}
         </Link>
       </div>
-    </div>
-  );
-}
+    ),
+  }),
+  columnHelper.accessor("type", {
+    cell: (info) => (
+      <div className="flex pl-5 pr-10 items-center">{info.getValue()}</div>
+    ),
+  }),
+  columnHelper.accessor("language", {
+    cell: (info) => (
+      <div className="flex pr-10 items-center pl-5">{info.getValue()}</div>
+    ),
+  }),
+];
 
-function Carousel({
-  images,
-  className = "w-full h-full",
-}: {
-  images: string[];
-  className: string;
-}) {
-  const [currentImg, setCurrentImg] = useState(0);
-  const [carouselSize, setCarouselSize] = useState({ width: 0, height: 0 });
-  const carouselRef = useRef(null);
+export default function Page() {
+  const defaultData: Project[] = [
+    {
+      project: {
+        name: "pokemon",
+        href: "/portforlio/project/pokemon/web",
+      },
+      type: "website",
+      language: "nextjs, golang",
+    },
+    {
+      project: {
+        name: "pokemon",
+        href: "/portforlio/project/pokemon/mobile",
+      },
+      type: "mobile",
+      language: "flutter",
+    },
+  ];
 
-  useEffect(() => {
-    let elem = carouselRef.current as unknown as HTMLDivElement;
-    let { width, height } = elem.getBoundingClientRect();
-    if (carouselRef.current) {
-      setCarouselSize({
-        width,
-        height,
-      });
-    }
-  }, []);
+  const [data, setData] = useState([...defaultData]);
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   return (
-    <div
-      className={clsx(
-        "flex flex-col justify-center gap-y-6 items-center",
-        className
-      )}
-    >
-      <div className={clsx("flex gap-x-4 w-full h-full")}>
-        <button
-          type="button"
-          className={clsx(
-            "flex items-center justify-center h-full px-4 group",
-            {
-              "opacity-50": currentImg === 0,
-            },
-            {
-              "cursor-pointer": currentImg > 0 && images.length > 1,
-            }
-          )}
-          data-carousel-prev
-          onClick={() => {
-            setCurrentImg((prev) => prev - 1);
-          }}
-          disabled={currentImg === 0}
-        >
-          <span
-            className={clsx(
-              "inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30",
-              {
-                "group-hover:bg-gray-600/50 group-focus:outline-none":
-                  currentImg > 0 && images.length > 1,
-              }
-            )}
-          >
-            <svg
-              className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 6 10"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M5 1 1 5l4 4"
-              />
-            </svg>
-            <span className="sr-only">Previous</span>
-          </span>
-        </button>
-
-        <div className="overflow-hidden relative flex justify-center items-center w-full h-full">
-          <div
-            ref={carouselRef}
-            style={{
-              left: -currentImg * carouselSize.width,
-            }}
-            className="w-full h-full flex transition duration-300 absolute"
-          >
-            {images.map((image, i) => {
-              return (
-                <div key={i} className="relative shrink-0 w-full h-full">
-                  <Image src={image} alt={""} fill className="" />
-                </div>
-              );
-            })}
-          </div>
+    <div className="pl-32">
+      <h4 className="text-white text-xl font-bold max-w-36 border-b-2 border-sky-400">
+        PROJECT LIST
+      </h4>
+      <br />
+      <div className="flex w-full h-full items-start text-white">
+        <div className="rounded-md border border-white">
+          <table>
+            <thead>
+              {table.getHeaderGroups().map((headerGroup, i) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header, i) => (
+                    <th
+                      key={header.id}
+                      className={clsx(
+                        "py-2 uppercase border-b-1 border-white",
+                        {
+                          "border-r-1 border-white":
+                            i < headerGroup.headers.length - 1,
+                        }
+                      )}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody>
+              {table.getRowModel().rows.map((row, j) => (
+                <tr
+                  key={row.id}
+                  className={clsx({
+                    "border-b-1 border-white":
+                      j < table.getRowModel().rows.length - 1,
+                  })}
+                >
+                  {row.getVisibleCells().map((cell, i) => (
+                    <td
+                      key={cell.id}
+                      className={clsx("py-2", {
+                        "border-r-1 border-white":
+                          i < row.getVisibleCells().length - 1,
+                      })}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-
-        <button
-          className={clsx(
-            "z-30 flex items-center justify-center h-full px-4 group",
-            {
-              "opacity-50": currentImg === images.length - 1,
-            },
-            {
-              "cursor-pointer": currentImg < images.length - 1,
-            }
-          )}
-          data-carousel-next
-          onClick={() => {
-            setCurrentImg((next) => next + 1);
-          }}
-          disabled={currentImg === images.length - 1}
-        >
-          <span
-            className={clsx(
-              "inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30",
-              {
-                "group-hover:bg-gray-600/50 group-focus:outline-none":
-                  currentImg < images.length - 1,
-              }
-            )}
-          >
-            <svg
-              className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 6 10"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="m1 9 4-4-4-4"
-              />
-            </svg>
-            <span className="sr-only">Next</span>
-          </span>
-        </button>
-      </div>
-      <div className="flex gap-x-3">
-        {images.map((image, i) => {
-          return (
-            <div
-              key={i}
-              className={clsx("w-5 h-1 bg-white cursor-pointer", {
-                "bg-white/30": i !== currentImg,
-              })}
-              onClick={() => {
-                setCurrentImg(i);
-              }}
-            ></div>
-          );
-        })}
       </div>
     </div>
   );
