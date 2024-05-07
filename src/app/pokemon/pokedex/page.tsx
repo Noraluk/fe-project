@@ -12,10 +12,10 @@ export default function Page({
   searchParams,
 }: {
   searchParams?: {
-    pokemon_name?: string;
-    pokemon_type?: string;
-    order?: string;
-    page?: string;
+    pokemon_name?: string | undefined;
+    pokemon_type?: string | undefined;
+    order?: string | undefined;
+    page?: string | undefined;
   };
 }) {
   const [pokemonID, setPokemonID] = useState(0);
@@ -27,8 +27,8 @@ export default function Page({
         <br />
         <PokemonList
           setPokemonID={setPokemonID}
-          pokemonSearch={searchParams?.pokemon_name ?? ""}
-          pokemonType={searchParams?.pokemon_type ?? ""}
+          pokemonSearch={searchParams?.pokemon_name}
+          pokemonType={searchParams?.pokemon_type}
           order={searchParams?.order}
         />
       </div>
