@@ -6,6 +6,16 @@ import Image from "next/image";
 import { color } from "@/constants/pokemon_constants";
 import { PokemonModel } from "@/models/pokemons_model";
 import { XCircleIcon } from "@heroicons/react/16/solid";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  useDisclosure,
+} from "@nextui-org/react";
+import Link from "next/link";
 
 export default function PokemonList({
   setPokemonID,
@@ -21,6 +31,7 @@ export default function PokemonList({
   by?: string;
 }) {
   const { ref, inView } = useInView();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const {
     data: pokemons,
@@ -29,6 +40,7 @@ export default function PokemonList({
     isFetchingNextPage,
     isLoading,
     refetch,
+    isError,
   } = useInfiniteQuery({
     queryKey: ["pokemons", pokemonSearch, pokemonType, order, by],
     queryFn: ({ pageParam = 1, queryKey }) => {
@@ -54,6 +66,12 @@ export default function PokemonList({
       fetchNextPage();
     }
   }, [inView, fetchNextPage, hasNextPage]);
+
+  useEffect(() => {
+    if (isError) {
+      onOpen();
+    }
+  }, [isError, onOpen]);
 
   if (isLoading) {
     return (
@@ -95,6 +113,27 @@ export default function PokemonList({
         )}
       </div>
       {isFetchingNextPage && <Loading innerRef={ref} />}
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Connection Failed
+              </ModalHeader>
+              <ModalBody>
+                <p>Cannot connect API</p>
+              </ModalBody>
+              <ModalFooter>
+                <Link href={"/portforlio/project/pokemon/web"}>
+                  <Button color="danger" variant="light" onPress={onClose}>
+                    Back
+                  </Button>
+                </Link>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </>
   );
 }

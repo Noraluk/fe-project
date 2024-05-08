@@ -8,7 +8,11 @@ export default function ReactQueryProvider({
   children: React.ReactNode;
 }) {
   const [queryClient] = React.useState(
-    new QueryClient({ defaultOptions: { queries: { staleTime: 5000 } } })
+    new QueryClient({
+      defaultOptions: {
+        queries: { staleTime: 5000, refetchOnWindowFocus: false },
+      },
+    })
   );
 
   return (

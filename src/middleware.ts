@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { checkHealth } from "./api/api";
 
 const publicRoutes = ["/"];
 
