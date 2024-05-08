@@ -3,8 +3,10 @@
 import { loginAction } from "@/actions/auth";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 import clsx from "clsx";
+import Link from "next/link";
 import { useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
+import Cookies from "js-cookie";
 
 export default function Home() {
   const initialState = { message: "", errors: {} };
@@ -74,6 +76,18 @@ export default function Home() {
         </div>
 
         <SubmitButton />
+        <div className="flex flex-col gap-y-1">
+          <Link
+            className="rounded-md bg-gray-400 font-bold p-2 w-72 text-center"
+            href={"/portforlio"}
+            onClick={() => {
+              Cookies.set("token", "guest");
+            }}
+          >
+            Guest
+          </Link>
+          <p className="text-red-600">Guest can see only portforlio</p>
+        </div>
       </div>
     </form>
   );

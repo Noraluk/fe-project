@@ -15,7 +15,7 @@ export default async function middleware(req: NextRequest) {
 
   const prevPath = req.headers
     .get("referer")
-    ?.replace("http://localhost:3000", "");
+    ?.replace(`http://${req.headers.get("host")!}`, "");
   if (
     !!!prevPath?.startsWith("/pokemon") &&
     path.startsWith("/pokemon") &&
