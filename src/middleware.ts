@@ -9,9 +9,9 @@ export default async function middleware(req: NextRequest) {
 
   const token = req.cookies.get("token")?.value;
 
-  if (!isPublicRoute && !token) {
-    return NextResponse.redirect(new URL("/", req.nextUrl));
-  }
+  // if (!isPublicRoute && !token) {
+  //   return NextResponse.redirect(new URL("/", req.nextUrl));
+  // }
 
   const prevPath = req.headers
     .get("referer")
