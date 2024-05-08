@@ -63,7 +63,7 @@ export default function Page() {
         <br />
         <br />
         <Link
-          href={"http://localhost:3000/pokemon/pokedex"}
+          href={`${process.env.HOST}/pokemon/pokedex`}
           className="hover:text-sky-300 font-bold self-end"
         >
           {`-> Link`}
