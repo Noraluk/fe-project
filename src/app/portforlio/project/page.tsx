@@ -17,6 +17,7 @@ type Project = {
   };
   type: string;
   language: string;
+  status: string;
 };
 
 const columnHelper = createColumnHelper<Project>();
@@ -28,6 +29,7 @@ const columns = [
         <Link
           href={info.getValue().href}
           className="hover:text-sky-400 capitalize"
+          aria-disabled={info.getValue().href.length == 0}
         >
           {info.getValue().name}
         </Link>
@@ -44,6 +46,11 @@ const columns = [
       <div className="flex pr-10 items-center pl-5">{info.getValue()}</div>
     ),
   }),
+  columnHelper.accessor("status", {
+    cell: (info) => (
+      <div className="flex pr-10 items-center pl-5">{info.getValue()}</div>
+    ),
+  }),
 ];
 
 export default function Page() {
@@ -55,6 +62,7 @@ export default function Page() {
       },
       type: "website",
       language: "nextjs, golang",
+      status: "success",
     },
     {
       project: {
@@ -63,6 +71,16 @@ export default function Page() {
       },
       type: "mobile",
       language: "flutter",
+      status: "success",
+    },
+    {
+      project: {
+        name: "chat",
+        href: "",
+      },
+      type: "website",
+      language: "nextjs, golang",
+      status: "in progress",
     },
   ];
 
