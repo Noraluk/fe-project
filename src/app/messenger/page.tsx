@@ -2,30 +2,30 @@
 
 import { useEffect, useRef, useState } from "react";
 
+interface User {
+  username: string;
+  unread_count: string;
+}
+
 export default function Page() {
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<string[]>([]);
-  const [users, setUsers] = useState<string[]>([]);
-  const [target, setTarget] = useState("");
-  const [username, setUsername] = useState("");
+  const [users, setUsers] = useState<User[]>([]);
+  const [recipient, setRecipient] = useState("");
+  const [username, setUsername] = useState<string>(
+    localStorage.getItem("username") ?? ""
+  );
   const [isConnected, setIsConnected] = useState(false);
 
   const socket = useRef<WebSocket>();
 
   useEffect(() => {
-    setUsername(localStorage.getItem("username") ?? "");
-
-    let ws = `ws://localhost:8080/ws?username=${localStorage.getItem(
-      "username"
-    )}`;
-    if (target) {
-      ws = ws.concat(`&target=${target}`);
-    }
+    let ws = `ws://localhost:8080/ws`;
     socket.current = new WebSocket(ws);
-    console.log("start");
 
     socket.current.onopen = () => {
       console.log("Connected to WebSocket server");
+      socket.current!.send(JSON.stringify({ sender: username }));
       setIsConnected(true);
     };
 
@@ -51,7 +51,7 @@ export default function Page() {
     return () => {
       socket.current!.close();
     };
-  }, [target]);
+  }, []);
 
   const send = () => {
     if (message.trim() === "") {
@@ -61,27 +61,32 @@ export default function Page() {
     console.log("Sending msg: ", message);
 
     if (isConnected && socket.current!.readyState === WebSocket.OPEN) {
-      socket.current!.send(message);
+      socket.current!.send(
+        JSON.stringify({
+          sender: username,
+          recipient: recipient,
+          request_type: 2,
+          message: message,
+        })
+      );
       setMessage("");
     } else {
       console.error("WebSocket is not open. Unable to send message.");
     }
   };
 
-  if (!username) {
-    return <div>Wrong</div>;
-  }
-
-  console.log(!isConnected, !target);
-
   return (
     <div className="h-full w-full flex justify-center items-center">
       <div className="flex h-3/4 w-ful justify-center items-center w-full px-44 gap-x-4">
         <div className="flex flex-col justify-center items-center h-full w-4/5 gap-y-2">
-          {isConnected && target && (
-            <div className="text-white font-bold self-start pl-5">{`connecting with ${target}`}</div>
+          {isConnected && recipient && (
+            <div className="text-white font-bold self-start pl-5">{`connecting with ${recipient}`}</div>
           )}
-          <ChatHistory username={username} messages={chatHistory} />
+          <ChatHistory
+            username={username}
+            messages={chatHistory}
+            recipient={recipient}
+          />
           <input
             type="text"
             className="w-full py-3 px-5"
@@ -94,7 +99,7 @@ export default function Page() {
                 send();
               }
             }}
-            disabled={!isConnected || !target}
+            disabled={!isConnected || !recipient}
           />
           {!isConnected && (
             <div className="text-white">Connecting to WebSocket server...</div>
@@ -107,14 +112,24 @@ export default function Page() {
                 key={i}
                 className="flex items-center space-x-4 p-4 cursor-pointer hover:bg-sky-200 focus:bg-sky-200"
                 onClick={() => {
-                  setTarget(user);
+                  setRecipient(user.username);
                   setChatHistory([]);
+
+                  console.log(username, user);
+                  socket.current!.send(
+                    JSON.stringify({
+                      sender: username,
+                      recipient: user.username,
+                      request_type: 1,
+                    })
+                  );
                 }}
               >
                 <div className="flex-none w-4 h-4 bg-green-500 rounded-full"></div>
                 <div className="flex-1 overflow-hidden whitespace-nowrap">
-                  <p className="truncate">{user} </p>
+                  <p className="truncate">{user.username} </p>
                 </div>
+                {recipient !== user.username && <p>{user.unread_count}</p>}
               </div>
             );
           })}
@@ -124,11 +139,19 @@ export default function Page() {
   );
 }
 
+interface Message {
+  sender: string;
+  recipient: string;
+  message: string;
+}
+
 function ChatHistory({
   username,
+  recipient,
   messages,
 }: {
   username: string;
+  recipient: string;
   messages: string[];
 }) {
   const scroll = useRef<null | HTMLDivElement>(null);
@@ -140,19 +163,25 @@ function ChatHistory({
   return (
     <div className="overflow-y-auto h-full w-full bg-white flex flex-col mx-auto px-10">
       {messages.map((message, i) => {
-        const msg = JSON.parse(message);
+        const msg: Message = JSON.parse(message);
 
-        return (
-          <div
-            key={i}
-            className={`${
-              msg.username == username ? "text-right" : ""
-            } text-lg`}
-          >
-            <div className="text-lg text-indigo-500">{msg.username}</div>
-            <p className="mt-1 text-lg text-gray-600">{msg.message}</p>
-          </div>
-        );
+        if (
+          msg &&
+          ((msg.sender == username && msg.recipient === recipient) ||
+            (msg.recipient == username && msg.sender === recipient))
+        ) {
+          return (
+            <div
+              key={i}
+              className={`${
+                msg.sender == username ? "text-right" : ""
+              } text-lg`}
+            >
+              <div className="text-lg text-indigo-500">{msg.sender}</div>
+              <p className="mt-1 text-lg text-gray-600">{msg.message}</p>
+            </div>
+          );
+        }
       })}
       <div ref={scroll}></div>
     </div>
