@@ -15,9 +15,6 @@ export default function Page() {
   const [recipient, setRecipient] = useState("");
   const [username, setUsername] = useState<string>("");
   const [isConnected, setIsConnected] = useState(false);
-  const [unreadCounts, setUnreadCounts] = useState<{
-    [user: string]: number;
-  }>({});
 
   const socket = useRef<WebSocket>();
 
@@ -42,12 +39,6 @@ export default function Page() {
         setUsers(data);
       } else {
         setChatHistory((prevState) => [...prevState, event.data]);
-        if (data.recipient === username && data.unread) {
-          setUnreadCounts((prevCounts) => ({
-            ...prevCounts,
-            [data.sender]: (prevCounts[data.sender] || 0) + 1,
-          }));
-        }
       }
     };
 
@@ -132,15 +123,21 @@ export default function Page() {
               <div
                 key={i}
                 className="flex items-center space-x-4 p-4 cursor-pointer hover:bg-sky-200 focus:bg-sky-200"
+                onFocus={() => {
+                  if (recipient) {
+                    socket.current!.send(
+                      JSON.stringify({
+                        sender: username,
+                        recipient: recipient,
+                        request_type: 3,
+                      })
+                    );
+                  }
+                }}
+                tabIndex={i}
                 onClick={() => {
                   setRecipient(user.username);
                   setChatHistory([]);
-
-                  unreadCounts[user.username] = 0;
-                  if (recipient) {
-                    unreadCounts[recipient] = 0;
-                  }
-                  setUnreadCounts(unreadCounts);
 
                   socket.current!.send(
                     JSON.stringify({
@@ -155,9 +152,7 @@ export default function Page() {
                 <div className="flex-1 overflow-hidden whitespace-nowrap">
                   <p className="truncate">{user.username} </p>
                 </div>
-                {recipient !== user.username && (
-                  <p>{unreadCounts[user.username]}</p>
-                )}
+                {recipient !== user.username && <p>{user.unread_count}</p>}
               </div>
             );
           })}
