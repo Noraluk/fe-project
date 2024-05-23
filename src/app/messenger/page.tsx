@@ -1,5 +1,6 @@
 "use client";
 
+import { XCircleIcon } from "@heroicons/react/16/solid";
 import { useEffect, useRef, useState } from "react";
 
 interface User {
@@ -16,6 +17,9 @@ export default function Page() {
     localStorage.getItem("username") ?? ""
   );
   const [isConnected, setIsConnected] = useState(false);
+  const [unreadCounts, setUnreadCounts] = useState<{
+    [user: string]: number;
+  }>({});
 
   const socket = useRef<WebSocket>();
 
@@ -36,6 +40,12 @@ export default function Page() {
         setUsers(data);
       } else {
         setChatHistory((prevState) => [...prevState, event.data]);
+        if (data.recipient === username && data.unread) {
+          setUnreadCounts((prevCounts) => ({
+            ...prevCounts,
+            [data.sender]: (prevCounts[data.sender] || 0) + 1,
+          }));
+        }
       }
     };
 
@@ -51,7 +61,7 @@ export default function Page() {
     return () => {
       socket.current!.close();
     };
-  }, []);
+  }, [username]);
 
   const send = () => {
     if (message.trim() === "") {
@@ -80,7 +90,16 @@ export default function Page() {
       <div className="flex h-3/4 w-ful justify-center items-center w-full px-44 gap-x-4">
         <div className="flex flex-col justify-center items-center h-full w-4/5 gap-y-2">
           {isConnected && recipient && (
-            <div className="text-white font-bold self-start pl-5">{`connecting with ${recipient}`}</div>
+            <div className="flex w-full items-center gap-x-3">
+              <div className="text-white font-bold pl-5">{`connecting with ${recipient}`}</div>
+              <XCircleIcon
+                className="w-6 h-6 text-white cursor-pointer hover:text-red-500"
+                onClick={() => {
+                  setRecipient("");
+                  setChatHistory([]);
+                }}
+              />
+            </div>
           )}
           <ChatHistory
             username={username}
@@ -115,7 +134,12 @@ export default function Page() {
                   setRecipient(user.username);
                   setChatHistory([]);
 
-                  console.log(username, user);
+                  unreadCounts[user.username] = 0;
+                  if (recipient) {
+                    unreadCounts[recipient] = 0;
+                  }
+                  setUnreadCounts(unreadCounts);
+
                   socket.current!.send(
                     JSON.stringify({
                       sender: username,
@@ -129,7 +153,9 @@ export default function Page() {
                 <div className="flex-1 overflow-hidden whitespace-nowrap">
                   <p className="truncate">{user.username} </p>
                 </div>
-                {recipient !== user.username && <p>{user.unread_count}</p>}
+                {recipient !== user.username && (
+                  <p>{unreadCounts[user.username]}</p>
+                )}
               </div>
             );
           })}
