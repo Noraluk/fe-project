@@ -13,15 +13,17 @@ export default function Page() {
   const [chatHistory, setChatHistory] = useState<string[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [recipient, setRecipient] = useState("");
-  const [username, setUsername] = useState<string>(
-    localStorage.getItem("username") ?? ""
-  );
+  const [username, setUsername] = useState<string>("");
   const [isConnected, setIsConnected] = useState(false);
   const [unreadCounts, setUnreadCounts] = useState<{
     [user: string]: number;
   }>({});
 
   const socket = useRef<WebSocket>();
+
+  useEffect(() => {
+    setUsername(localStorage.getItem("username") ?? "");
+  }, []);
 
   useEffect(() => {
     let ws = `ws://localhost:8080/ws`;
