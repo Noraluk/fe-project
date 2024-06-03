@@ -18,6 +18,14 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(
       new URL("/portforlio/project/pokemon/web", req.nextUrl)
     );
+  }else if (
+    !!!prevPath?.startsWith("/messenger") &&
+    path.startsWith("/messenger") &&
+    prevPath != "/portforlio/project/messenger"
+  ) {
+    return NextResponse.redirect(
+      new URL("/portforlio/project/messenger", req.nextUrl)
+    );
   }
 
   return NextResponse.next();

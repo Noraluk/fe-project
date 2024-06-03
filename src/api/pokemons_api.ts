@@ -2,7 +2,6 @@ import { CreatedPokemon } from "@/models/created_pokemon";
 import { ItemsResponse } from "@/models/items_model";
 import { Pokemon } from "@/models/pokemon_model";
 import { PokemonsResponse } from "@/models/pokemons_model";
-import axios from "axios";
 import { api } from "./api";
 
 export async function fetchPokemons(
@@ -19,23 +18,23 @@ export async function fetchPokemons(
 }
 
 export async function fetchPokemon(id: number): Promise<Pokemon> {
-  const res = await api.get(`http://localhost:8080/api/pokemons/${id}`);
+  const res = await api.get(`/api/pokemons/${id}`);
   return res.data.data;
 }
 
 export async function fetchItems(pageParam: number): Promise<ItemsResponse> {
   const res = await api.get(
-    `http://localhost:8080/api/pokemon-items?page=${pageParam}&page_size=10`
+    `/api/pokemon-items?page=${pageParam}&page_size=10`
   );
   return res.data;
 }
 
 export async function createPokemon(req: CreatedPokemon) {
-  const res = await api.post("http://localhost:8080/api/pokemons", req);
+  const res = await api.post("/api/pokemons", req);
   return res.data;
 }
 
 export async function deletePokemon(id: number): Promise<Pokemon> {
-  const res = await api.delete(`http://localhost:8080/api/pokemons/${id}`);
+  const res = await api.delete(`/api/pokemons/${id}`);
   return res.data;
 }

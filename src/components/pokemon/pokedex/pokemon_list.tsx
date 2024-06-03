@@ -15,7 +15,7 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/react";
-import Link from "next/link";
+import ConnectionFailedModal from "@/components/connection_failed_modal";
 
 export default function PokemonList({
   setPokemonID,
@@ -113,27 +113,7 @@ export default function PokemonList({
         )}
       </div>
       {isFetchingNextPage && <Loading innerRef={ref} />}
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Connection Failed
-              </ModalHeader>
-              <ModalBody>
-                <p>Cannot connect API</p>
-              </ModalBody>
-              <ModalFooter>
-                <Link href={"/portforlio/project/pokemon/web"}>
-                  <Button color="danger" variant="light" onPress={onClose}>
-                    Back
-                  </Button>
-                </Link>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <ConnectionFailedModal isOpen={isOpen} onOpenChange={onOpenChange} />
     </>
   );
 }

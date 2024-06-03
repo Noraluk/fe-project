@@ -17,3 +17,14 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+export async function checkHealth()  {
+  try {
+    const res = await api.get("/api/health");
+    if (res.status != 200) {
+      throw new Error("connection failed")
+    }
+  } catch (error) {
+    throw error
+  }
+}

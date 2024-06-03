@@ -76,7 +76,7 @@ export default function Page() {
     {
       project: {
         name: "chat",
-        href: "",
+        href: "/portforlio/project/messenger",
       },
       type: "website",
       language: "nextjs, golang",
