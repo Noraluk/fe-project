@@ -37,7 +37,7 @@ export default function Page() {
           </div>
           <br />
           <button className="border border-white rounded-xl px-2 py-2 w-48 hover:bg-white/20">
-            <a href="/noraluk_cv_2023.pdf" download="noraluk_resume">
+            <a href="/noraluk_cv_2024_aus.pdf" download="noraluk_resume">
               RESUME
             </a>
           </button>
